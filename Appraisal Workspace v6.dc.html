@@ -985,7 +985,7 @@ class Component extends DCLogic {
   v6Vals() {
     const s = this.state, f = s.fields, o = {};
     PHOTOS.forEach((p, i) => {
-      o["gal" + i] = React.createElement("img", { src: "assets/x5-" + p[0] + ".jpg", alt: p[1], style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } });
+      o["gal" + i] = React.createElement("img", { src: "assets/x5-" + p[0] + ".jpg?v=2", alt: p[1], style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } });
       o["galLabel" + i] = p[1];
       o["openGal" + i] = () => this.setState({ photoIdx: i, photoFull: true });
     });
@@ -1233,13 +1233,13 @@ class Component extends DCLogic {
       })),
 
       photoNum: s.photoIdx + 1, photoCount: PHOTOS.length, photoLabel: PHOTOS[s.photoIdx][1],
-      photoMain: React.createElement("img", { src: "assets/x5-" + PHOTOS[s.photoIdx][0] + ".jpg", alt: PHOTOS[s.photoIdx][1], style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } }),
+      photoMain: React.createElement("img", { src: "assets/x5-" + PHOTOS[s.photoIdx][0] + ".jpg?v=2", alt: PHOTOS[s.photoIdx][1], style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } }),
       prevPhoto: () => this.setState({ photoIdx: (s.photoIdx + PHOTOS.length - 1) % PHOTOS.length }),
       nextPhoto: () => this.setState({ photoIdx: (s.photoIdx + 1) % PHOTOS.length }),
       onPhotoKey: e => { if (e.key === "ArrowRight") { e.preventDefault(); this.setState({ photoIdx: (s.photoIdx + 1) % PHOTOS.length }); } else if (e.key === "ArrowLeft") { e.preventDefault(); this.setState({ photoIdx: (s.photoIdx + PHOTOS.length - 1) % PHOTOS.length }); } },
       thumbs: PHOTOS.map((p, i) => ({
         label: p[1], pick: () => this.setState({ photoIdx: i }),
-        img: React.createElement("img", { src: "assets/x5-" + p[0] + ".jpg", alt: "", style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } }),
+        img: React.createElement("img", { src: "assets/x5-" + p[0] + ".jpg?v=2", alt: "", style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } }),
         style: "flex:none;width:72px;height:50px;padding:0;border-radius:6px;overflow:hidden;cursor:pointer;background:none;border:2px solid " + (i === s.photoIdx ? "var(--color-blue-600)" : "var(--stroke-secondary-1)")
       })),
 
