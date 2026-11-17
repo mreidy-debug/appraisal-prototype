@@ -20,6 +20,8 @@
   [data-imv-range]::-moz-range-thumb { width: 22px; height: 22px; border-radius: 50%; background: #fff; border: 3px solid var(--color-blue-600); box-sizing: border-box; box-shadow: 0 1px 4px rgba(0,0,0,.3); }
   body { margin: 0; background: var(--surface-primary-1); }
   input, select, button, textarea { font-family: var(--text-family-graphik); letter-spacing: .0125rem; }
+  /* When the customer offer is open, print only the offer (not the workspace behind it). */
+  @media print { .v6-root:has(.v6-offer-overlay) > :not(:has(.v6-offer-overlay)):not(.v6-offer-overlay) { display: none !important; } .v6-root:has(.v6-offer-overlay) { min-height: 0 !important; background: #fff !important; } .v6-root:has(.v6-offer-overlay) .v6-offer-overlay { position: static !important; overflow: visible !important; background: #fff !important; } html:has(.v6-offer-overlay), body:has(.v6-offer-overlay) { height: auto !important; min-height: 0 !important; background: #fff !important; } }
   input::placeholder, textarea::placeholder { color: var(--color-livid-500); }
   input:focus-visible, select:focus-visible, textarea:focus-visible, button:focus-visible { outline: none; box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--color-blue-600); }
   @keyframes hxPulse { 0%, 100% { opacity: .55; } 50% { opacity: 1; } }
@@ -36,7 +38,7 @@
   a { color: var(--text-action-link); } a:hover { color: var(--text-action-hover); }
 </style>
 </helmet>
-<div style="min-height:100vh;background:var(--surface-primary-2);font-family:var(--text-family-graphik);color:var(--text-primary)">
+<div class="v6-root" style="min-height:100vh;background:var(--surface-primary-2);font-family:var(--text-family-graphik);color:var(--text-primary)">
 
   <div class="v6-shell" style="display:flex;align-items:flex-start;min-height:100vh">
 
@@ -649,7 +651,7 @@
   </sc-if>
 
   <sc-if value="{{ showCustomer }}">
-    <div style="position:fixed;inset:0;z-index:900;background:var(--surface-primary-2);overflow:auto">
+    <div class="v6-offer-overlay" style="position:fixed;inset:0;z-index:900;background:var(--surface-primary-2);overflow:auto">
       <dc-import name="Customer Offer Sheet" payload="{{ customerPayload }}" on-close="{{ closeCustomer }}" hint-size="100%,100%"></dc-import>
     </div>
   </sc-if>
@@ -1189,6 +1191,7 @@ class Component extends DCLogic {
       mode, customerFirst: s.customer.first, dealerName: "Prime Motors", appraiser: "D. Mercer", vin: s.vin,
       year: f.year, make: f.make, model: f.model, trim: f.trim, odo: f.odo, engine: f.engine, trans: f.trans, body: f.body, color: f.color,
       bookName: s.bookInUse, bookValue: base, bookBasis: "Trade-in", repairs: costs, offer: appraisedValue,
+      books: BOOKS.filter(([n]) => n !== "CarGurus IMV" && n !== "Predicted Retail").map(([n]) => ({ name: n, value: this.bookTotal(n) })),
       marginPct: this.num(s.marginPct), marginDeduct,
       initial: mode === "smc" ? {
         sent: SMC_OFFER.sent, bookName: SMC_OFFER.book, bookValue: SMC_OFFER.bookValue, marginPct: SMC_OFFER.marginPct,

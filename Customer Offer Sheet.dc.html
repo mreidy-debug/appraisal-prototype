@@ -13,289 +13,371 @@
 <script src="_ds/chassis-ds-beta-019dd049-5996-73dc-865d-5e16374dc8cb/_ds_bundle.js"></script>
 <style>
   body { margin: 0; background: var(--surface-primary-2); }
-  button { font-family: var(--text-family-graphik); }
+  button, input { font-family: var(--text-family-graphik); }
+  .cg-print-only { display: none; }
+  @media (min-width: 1160px) { .cg-open .cg-wrap { margin-right: 380px !important; } }
+  .cg-amt { width: 96px; height: 28px; box-sizing: border-box; padding: 0 8px; border: 1px solid var(--color-blue-600); border-radius: 6px; font-size: 13px; font-weight: 600; text-align: right; background: #fff; color: var(--text-primary); }
+  .cg-line { border: none; border-bottom: 1px solid var(--stroke-secondary-2); background: transparent; font-size: 14px; padding: 2px 4px; color: var(--text-primary); width: 110px; text-align: right; }
+  @media print {
+    @page { size: letter; margin: 0.5in; }
+    html, body { background: #fff !important; }
+    * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .cg-no-print { display: none !important; }
+    .cg-print-only { display: block !important; }
+    .cg-doc { box-shadow: none !important; border: none !important; border-radius: 0 !important; max-width: none !important; margin: 0 !important; padding: 0 !important; }
+    .cg-keep { break-inside: avoid; page-break-inside: avoid; }
+    .cg-page { min-height: 0 !important; background: #fff !important; }
+    .cg-line { border-bottom-color: transparent !important; }
+    .cg-wrap { padding: 0 !important; margin: 0 !important; max-width: none !important; gap: 0 !important; }
+    .cg-sum { display: grid !important; grid-template-columns: repeat(4, 1fr); gap: 4px 12px !important; padding: 8px 12px !important; margin-top: 10px !important; }
+    .cg-sum > div { flex-direction: column; gap: 0 !important; border-top: none !important; padding-top: 0 !important; margin-top: 0 !important; }
+    .cg-vimg { max-width: 160px; }
+    .cg-xrow { padding: 4px 12px !important; font-size: 12px !important; }
+    .cg-hero { padding: 12px 0 8px !important; }
+    .cg-check { margin: 10px 0 8px !important; padding: 12px 18px !important; }
+    .cg-check > div { margin-top: 8px !important; }
+    .cg-check > div:first-child { margin-top: 0 !important; }
+    .cg-big { font-size: 58px !important; margin-top: 0 !important; line-height: 1.05 !important; }
+    .cg-veh { grid-template-columns: 190px 1fr !important; padding: 4px 0 12px !important; gap: 16px !important; }
+    .cg-groups { column-count: 2; column-gap: 28px; }
+    .cg-groups > div { break-inside: auto; margin-top: 8px !important; }
+    .cg-row { break-inside: avoid; }
+    .cg-gt { break-after: avoid; padding-bottom: 3px !important; }
+    .cg-code { display: none !important; }
+    .cg-row { padding: 3px 2px !important; gap: 8px !important; }
+    .cg-note { font-size: 10.5px !important; line-height: 13px !important; }
+    .cg-diag { width: 118px !important; }
+    .cg-ws { margin-top: 14px !important; padding: 10px 14px !important; }
+    .cg-sign { margin-top: 12px !important; padding-top: 10px !important; }
+    .cg-sign > div:nth-child(2) { margin-top: 20px !important; }
+  }
 </style>
 </helmet>
-<div style="min-height:100vh;background:var(--surface-primary-2);font-family:var(--text-family-graphik);color:var(--text-primary)">
+<div class="{{ pageClass }}" style="min-height:100vh;background:var(--surface-primary-2);font-family:var(--text-family-graphik);color:var(--text-primary)">
 
-  <div style="display:flex;align-items:center;gap:16px;padding:0 24px;height:56px;background:var(--surface-secondary-2);color:#fff">
+  <div class="cg-no-print" style="position:sticky;top:0;z-index:30;display:flex;align-items:center;gap:16px;padding:0 24px;height:56px;background:var(--surface-secondary-2);color:#fff">
     <div style="font-family:var(--text-family-rund-display);font-weight:700;font-size:20px">Car<span style="color:var(--color-red-500)">Gurus</span></div>
-    <div style="font-size:13px;color:var(--color-livid-400)">Your appraisal from {{ dealerName }}</div>
-    <div style="margin-left:auto;display:flex;gap:10px">
+    <div style="flex:1 1 0;min-width:0;font-size:13px;color:var(--color-livid-400);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Offer from {{ dealerName }}</div>
+    <div style="flex:none;display:flex;gap:10px">
       <button onClick="{{ backToDealer }}" style="height:34px;padding:0 16px;border-radius:60px;border:1px solid var(--color-livid-600);background:transparent;color:#fff;font-size:13px;font-weight:500;cursor:pointer;white-space:nowrap" style-hover="background:var(--color-livid-700)">← Dealer view</button>
-      <button onClick="{{ doPrint }}" style="height:34px;padding:0 16px;border-radius:60px;border:1px solid var(--color-livid-600);background:transparent;color:#fff;font-size:13px;font-weight:500;cursor:pointer">Print</button>
-      <button style="height:34px;padding:0 18px;border-radius:60px;border:none;background:var(--surface-action-primary-default);color:#fff;font-size:13px;font-weight:500;cursor:pointer" style-hover="background:var(--surface-action-primary-hover)">Accept offer</button>
+      <button onClick="{{ doPrint }}" style="height:34px;padding:0 16px;border-radius:60px;border:1px solid var(--color-livid-600);background:transparent;color:#fff;font-size:13px;font-weight:500;cursor:pointer;white-space:nowrap" style-hover="background:var(--color-livid-700)">Print / Save as PDF</button>
+      <button onClick="{{ togglePanel }}" aria-expanded="{{ panelOpen }}" aria-controls="cg-customize" style="{{ customizeBtnStyle }}">Customize consumer view</button>
     </div>
   </div>
 
-  <div style="max-width:1000px;margin:0 auto;padding:24px 20px 64px;display:flex;flex-direction:column;gap:16px">
+  <sc-if value="{{ panelOpen }}" hint-placeholder-val="{{ false }}">
+  <aside id="cg-customize" class="cg-no-print" role="complementary" aria-label="Customize consumer view" style="position:fixed;top:56px;right:0;bottom:0;z-index:25;width:360px;max-width:100vw;box-sizing:border-box;display:flex;flex-direction:column;background:var(--surface-primary-1);border-left:1px solid var(--stroke-secondary-1);box-shadow:-8px 0 24px rgba(13,23,34,.10)">
+    <div style="display:flex;align-items:center;gap:8px;padding:16px 20px;border-bottom:1px solid var(--stroke-secondary-1)">
+      <div style="font-family:var(--text-family-rund-display);font-weight:600;font-size:18px">Customize consumer view</div>
+      <button onClick="{{ closePanel }}" aria-label="Close" style="margin-left:auto;width:32px;height:32px;border:none;border-radius:60px;background:transparent;font-size:16px;color:var(--text-midtone);cursor:pointer" style-hover="background:var(--alpha-dark-4)">✕</button>
+    </div>
+    <div style="flex:1 1 auto;overflow-y:auto;padding:4px 20px 20px">
+      <div style="padding-top:16px">
+        <div style="font-size:13px;font-weight:600">Offer sheet</div>
+        <div role="group" aria-label="Offer sheet" style="display:flex;margin-top:8px;border:1px solid var(--stroke-secondary-2);border-radius:8px;overflow:hidden"><sc-for list="{{ modeOpts }}" as="o" hint-placeholder-count="2"><button onClick="{{ o.pick }}" aria-pressed="{{ o.on }}" style="{{ o.style }}">{{ o.label }}</button></sc-for></div>
+      </div>
+      <div style="padding-top:18px">
+        <div style="font-size:13px;font-weight:600">Layout</div>
+        <div role="group" aria-label="Layout" style="display:flex;margin-top:8px;border:1px solid var(--stroke-secondary-2);border-radius:8px;overflow:hidden"><sc-for list="{{ layoutOpts }}" as="o" hint-placeholder-count="2"><button onClick="{{ o.pick }}" aria-pressed="{{ o.on }}" style="{{ o.style }}">{{ o.label }}</button></sc-for></div>
+      </div>
+      <div style="padding-top:20px;margin-top:20px;border-top:1px solid var(--stroke-secondary-1)">
+        <div style="font-size:13px;font-weight:600">Show on the offer</div>
+        <div style="font-size:12px;color:var(--text-midtone);margin-top:2px;text-wrap:pretty">Anything you turn on is shown to the customer and on the printout.</div>
+        <sc-for list="{{ showRows }}" as="r" hint-placeholder-count="3">
+          <div style="display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--stroke-secondary-1)">
+            <div style="flex:1 1 auto;min-width:0"><div style="font-size:14px">{{ r.label }}</div><div style="font-size:12px;color:var(--text-midtone);margin-top:1px">{{ r.hint }}</div></div>
+            <button role="switch" aria-checked="{{ r.on }}" aria-label="{{ r.label }}" onClick="{{ r.toggle }}" style="{{ r.trackStyle }}"><span style="{{ r.knobStyle }}"></span></button>
+          </div>
+        </sc-for>
+      </div>
+      <div style="padding-top:20px;margin-top:20px">
+        <div style="font-size:13px;font-weight:600">Add to the sheet</div>
+        <sc-for list="{{ addonRows }}" as="r" hint-placeholder-count="1">
+          <div style="display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--stroke-secondary-1)">
+            <div style="flex:1 1 auto;min-width:0"><div style="font-size:14px">{{ r.label }}</div><div style="font-size:12px;color:var(--text-midtone);margin-top:1px">{{ r.hint }}</div></div>
+            <button role="switch" aria-checked="{{ r.on }}" aria-label="{{ r.label }}" onClick="{{ r.toggle }}" style="{{ r.trackStyle }}"><span style="{{ r.knobStyle }}"></span></button>
+          </div>
+        </sc-for>
+      </div>
+      <div style="padding-top:20px;margin-top:20px;border-top:1px solid var(--stroke-secondary-1)">
+        <div style="font-size:13px;font-weight:600">This offer</div>
+        <div style="margin-top:10px">
+          <label for="cg-final-offer" style="display:block;font-size:13px">Final offer</label>
+          <div style="display:flex;align-items:center;gap:8px;margin-top:6px">
+            <div style="display:flex;align-items:center;flex:1 1 auto;min-width:0;height:36px;box-sizing:border-box;border:1px solid var(--stroke-secondary-2);border-radius:7px;overflow:hidden;background:#fff"><span style="flex:none;align-self:stretch;display:flex;align-items:center;padding:0 10px;border-right:1px solid var(--stroke-secondary-1);color:var(--text-midtone);background:var(--surface-primary-2)">$</span><input id="cg-final-offer" aria-label="Override final offer" value="{{ overrideVal }}" onChange="{{ onOverride }}" onBlur="{{ onOverrideBlur }}" onKeyDown="{{ onOverrideKey }}" placeholder="{{ offerPlain }}" inputmode="numeric" style="flex:1 1 auto;min-width:0;height:100%;border:none;outline:none;padding:0 10px;font-size:14px;background:transparent;color:var(--text-primary)"></div>
+            <sc-if value="{{ hasOverride }}" hint-placeholder-val="{{ false }}"><button onClick="{{ clearOverride }}" style="border:none;background:none;padding:0;font-size:13px;font-weight:500;color:var(--text-action-link);cursor:pointer">Reset</button></sc-if>
+          </div>
+          <div style="font-size:12px;color:var(--text-midtone);margin-top:6px;text-wrap:pretty">Replaces the calculated offer. Rounded to the nearest $100. Leave blank to use the calculated offer.</div>
+        </div>
+        <sc-for list="{{ thisOfferRows }}" as="r" hint-placeholder-count="1">
+          <div style="display:flex;align-items:center;gap:12px;padding:12px 0;margin-top:6px;border-top:1px solid var(--stroke-secondary-1)">
+            <div style="flex:1 1 auto;min-width:0"><div style="font-size:14px">{{ r.label }}</div><div style="font-size:12px;color:var(--text-midtone);margin-top:1px">{{ r.hint }}</div></div>
+            <button role="switch" aria-checked="{{ r.on }}" aria-label="{{ r.label }}" onClick="{{ r.toggle }}" style="{{ r.trackStyle }}"><span style="{{ r.knobStyle }}"></span></button>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px;padding:12px 20px;border-top:1px solid var(--stroke-secondary-1)">
+      <div style="flex:1 1 auto;font-size:12px;color:var(--text-midtone);text-wrap:pretty">Sheet style choices are saved on this device.</div>
+      <button onClick="{{ closePanel }}" style="height:36px;padding:0 20px;border-radius:60px;border:none;background:var(--surface-action-primary-default);color:#fff;font-size:14px;font-weight:500;cursor:pointer" style-hover="background:var(--surface-action-primary-hover)">Done</button>
+    </div>
+  </aside>
+  </sc-if>
 
-    <div style="background:var(--surface-primary-1);border:1px solid var(--stroke-secondary-1);border-radius:16px;padding:24px">
-      <div style="display:flex;flex-wrap:wrap;align-items:baseline;gap:8px 16px;margin-bottom:20px">
-        <div style="font-family:var(--text-family-rund-display);font-weight:600;font-size:26px;line-height:30px">{{ greeting }}</div>
-        <div style="margin-left:auto;font-size:12px;color:var(--text-midtone)">{{ expiryLine }}</div>
+  <div class="cg-wrap" style="max-width:900px;margin:0 auto;padding:20px 20px 64px;display:flex;flex-direction:column;gap:16px">
+
+    <div class="cg-doc" style="background:var(--surface-primary-1);border:1px solid var(--stroke-secondary-1);border-radius:16px;padding:28px 32px;box-shadow:0 2px 10px rgba(13,23,34,.06)">
+
+      <div class="cg-keep" style="display:flex;flex-wrap:wrap;align-items:center;gap:12px 16px;padding-bottom:16px;border-bottom:1px solid var(--stroke-secondary-1)">
+        <img src="assets/prime-motors-logo.svg" alt="{{ dealerName }} logo" style="flex:none;width:56px;height:56px;display:block">
+        <div style="min-width:0">
+          <div style="font-family:var(--text-family-rund-display);font-weight:600;font-size:20px;line-height:24px">{{ dealerName }}</div>
+          <div style="font-size:12px;color:var(--text-midtone);margin-top:2px">Dealership address · phone</div>
+        </div>
+        <div style="margin-left:auto;text-align:right;font-size:12px;color:var(--text-midtone);line-height:18px">
+          <div>Prepared {{ preparedOn }}</div>
+          <div style="color:var(--text-primary);font-weight:500">Valid through {{ validThrough }}</div>
+          <sc-if value="{{ hasName }}" hint-placeholder-val="{{ false }}"><div>For {{ customerName }}</div></sc-if>
+        </div>
       </div>
 
-      <sc-if value="{{ isRetail }}" hint-placeholder-val="{{ true }}">
-        <div style="margin-bottom:24px">
-          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px">
-            <div style="min-width:0;border:1px solid var(--stroke-secondary-1);border-radius:12px;overflow:hidden;text-align:center;background:var(--surface-primary-1)">
-              <div style="padding:14px 12px 12px">
-                <div style="font-size:11px;font-weight:500;letter-spacing:0.03rem;text-transform:uppercase;color:var(--text-midtone)">Initial offer</div>
-                <div style="font-family:var(--text-family-rund-display);font-weight:600;font-size:32px;line-height:38px;margin-top:4px">{{ initialOfferLabel }}</div>
-                <div style="font-size:12px;color:var(--text-midtone);margin-top:2px">{{ initialSentNote }}</div>
-              </div>
-              <div style="height:4px;background:var(--color-livid-400)"></div>
-            </div>
-            <div style="min-width:0;border:1px solid var(--stroke-secondary-1);border-radius:12px;overflow:hidden;text-align:center;background:var(--surface-primary-1)">
-              <div style="padding:14px 12px 12px">
-                <div style="font-size:11px;font-weight:500;letter-spacing:0.03rem;text-transform:uppercase;color:var(--text-midtone)">Updated offer</div>
-                <div style="font-family:var(--text-family-rund-display);font-weight:600;font-size:32px;line-height:38px;margin-top:4px;color:var(--color-green-700)">{{ finalOfferLabel }}</div>
-                <div style="font-size:12px;color:var(--text-midtone);margin-top:2px">After in-person appraisal · {{ updatedOn }}</div>
-              </div>
-              <div style="height:4px;background:var(--color-green-600)"></div>
-            </div>
-          </div>
-          <div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;margin-top:14px">
-            <span style="font-size:13px;font-weight:600;padding:6px 12px;border-radius:60px;background:{{ deltaBg }};color:{{ offerDeltaColor }};white-space:nowrap">{{ offerDelta }}</span>
-            <span style="font-size:12px;color:var(--text-midtone)">change from your online offer</span>
-          </div>
-          <sc-if value="{{ hasBridge }}" hint-placeholder-val="{{ true }}">
-            <div style="margin-top:12px;border:1px solid var(--stroke-secondary-1);border-radius:12px;overflow:hidden">
-              <div style="padding:8px 14px;background:var(--surface-primary-2);font-size:11px;font-weight:600;letter-spacing:0.03rem;text-transform:uppercase;color:var(--text-midtone)">What changed</div>
-              <sc-for list="{{ bridge }}" as="b" hint-placeholder-count="2">
-                <div style="display:flex;gap:12px;align-items:flex-start;padding:12px 14px;border-top:1px solid var(--stroke-secondary-1)">
-                  <div style="flex:1 1 auto;min-width:0">
-                    <div style="font-size:14px;font-weight:500">{{ b.label }}</div>
-                    <div style="font-size:12px;color:var(--text-midtone);margin-top:2px;text-wrap:pretty">{{ b.sub }}</div>
-                  </div>
-                  <div style="flex:none;font-size:14px;font-weight:600;color:{{ b.color }}">{{ b.amount }}</div>
-                </div>
-              </sc-for>
-            </div>
-          </sc-if>
+      <sc-if value="{{ isStandard }}" hint-placeholder-val="{{ true }}">
+        <div class="cg-keep cg-hero" style="padding:28px 0 20px;text-align:center">
+          <div style="font-size:13px;font-weight:500;letter-spacing:0.03rem;text-transform:uppercase;color:var(--text-midtone)">Our offer for your {{ vehicleShort }}</div>
+          <div class="cg-big" aria-label="Offer amount" style="font-family:var(--text-family-rund-display);font-weight:600;font-size:clamp(64px,12vw,112px);line-height:1.05;margin-top:6px;color:var(--color-green-700)">{{ offerLabel }}</div>
+          <div style="font-size:14px;color:var(--text-midtone);margin-top:6px">Valid through {{ validThrough }}</div>
+          <sc-if value="{{ hasOnline }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;color:var(--text-midtone);margin-top:8px">Your online offer was {{ onlineOffer }} · {{ onlineDelta }}</div></sc-if>
         </div>
       </sc-if>
 
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px;align-items:start">
+      <sc-if value="{{ isCheck }}" hint-placeholder-val="{{ false }}">
+        <div class="cg-keep cg-check" style="margin:24px 0 16px;border:2px solid var(--color-livid-600);border-radius:10px;padding:20px 24px;background:linear-gradient(180deg,#f6faf7,#e9f1ec)">
+          <div style="display:flex;flex-wrap:wrap;align-items:flex-start;gap:8px 16px">
+            <div>
+              <div style="font-family:var(--text-family-rund-display);font-weight:600;font-size:18px">{{ dealerName }}</div>
+              <div style="font-size:11px;color:var(--text-midtone);margin-top:2px">Offer to purchase your vehicle</div>
+            </div>
+            <div style="margin-left:auto;text-align:right;font-size:12px;line-height:18px">
+              <div>No. {{ offerNo }}</div>
+              <div>Date: {{ preparedShort }}</div>
+            </div>
+          </div>
+          <div style="display:flex;flex-wrap:wrap;align-items:flex-end;gap:8px 12px;margin-top:22px">
+            <span style="font-size:11px;color:var(--text-midtone);max-width:70px;line-height:13px">Pay to the order of</span>
+            <span style="flex:1 1 200px;min-width:0;border-bottom:1px solid var(--text-primary);font-size:20px;padding-bottom:2px">{{ payee }}</span>
+            <span aria-label="Offer amount" style="flex:none;border:2px solid var(--text-primary);border-radius:4px;padding:4px 12px;font-family:var(--text-family-rund-display);font-weight:600;font-size:30px;background:#fff">{{ offerCheck }}</span>
+          </div>
+          <div style="margin-top:16px;border-bottom:1px solid var(--text-primary);font-size:15px;padding-bottom:2px;text-wrap:pretty">{{ offerWords }}</div>
+          <div style="display:flex;flex-wrap:wrap;align-items:flex-end;gap:12px 28px;margin-top:22px">
+            <div style="flex:1 1 220px;min-width:0"><div style="font-size:13px;border-bottom:1px solid var(--stroke-secondary-2);padding-bottom:2px;text-wrap:pretty"><span style="color:var(--text-midtone)">Memo:</span> {{ memoLine }}</div></div>
+            <div style="flex:0 1 240px;min-width:180px"><div style="border-bottom:1px solid var(--text-primary);height:26px"></div><div style="font-size:10.5px;color:var(--text-midtone);margin-top:3px">Authorized dealership signature</div></div>
+          </div>
+          <div style="margin-top:10px;font-size:11px;color:var(--text-midtone)">Valid through {{ validThrough }}. This is an offer to purchase and not a negotiable instrument.</div>
+        </div>
+      </sc-if>
+
+      <div class="cg-keep cg-veh" style="display:grid;grid-template-columns:minmax(0,260px) minmax(0,1fr);gap:20px;align-items:center;padding:8px 0 22px;border-bottom:1px solid var(--stroke-secondary-1)">
+        <img class="cg-vimg" src="assets/x5-front.jpg?v=3" alt="{{ vehicleTitle }}" style="width:100%;aspect-ratio:3/2;object-fit:cover;border-radius:10px;border:1px solid var(--stroke-secondary-1);display:block">
         <div style="min-width:0">
-          <div style="display:inline-block;font-size:12px;font-weight:500;letter-spacing:0.0125rem;padding:6px 12px;border-radius:4px;background:var(--surface-primary-2);border:1px solid var(--stroke-secondary-1);color:var(--text-midtone);margin-bottom:12px">VIN: {{ vin }}</div>
-          <div style="font-family:var(--text-family-rund-display);font-weight:600;font-size:34px;line-height:38px">{{ vehicleTitle }}</div>
-          <div style="font-size:13px;color:var(--text-midtone);margin-top:10px">{{ specLine }}</div>
-        </div>
-
-        <div style="min-width:0;max-width:280px;justify-self:end;width:100%">
-          <div style="padding-bottom:12px;border-bottom:1px solid var(--stroke-secondary-1)">
-            <div style="font-size:11px;font-weight:500;letter-spacing:0.03rem;color:var(--text-midtone);text-transform:uppercase">Vehicle valuation</div>
-            <div style="display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;margin-top:4px">
-              <span style="font-family:var(--text-family-rund-display);font-weight:600;font-size:24px">{{ valuation }}</span>
-              <span style="font-size:15px;font-weight:600;color:var(--text-primary)">{{ bookName }}</span>
-            </div>
-          </div>
-          <div style="padding:12px 0;border-bottom:1px solid var(--stroke-secondary-1)">
-            <div style="font-size:11px;font-weight:500;letter-spacing:0.03rem;color:var(--text-midtone);text-transform:uppercase">Dealer adjustment</div>
-            <div style="font-family:var(--text-family-rund-display);font-weight:600;font-size:24px;margin-top:4px">{{ dealerAdjLine }}</div>
-            <sc-if value="{{ hasReason }}" hint-placeholder-val="{{ false }}"><div style="margin-top:6px;font-size:13px;color:var(--text-midtone);text-wrap:pretty">Dealer note: {{ reasonText }}</div></sc-if>
-          </div>
-          <div style="padding:12px 0;border-bottom:1px solid var(--stroke-secondary-1)">
-            <div style="font-size:11px;font-weight:500;letter-spacing:0.03rem;color:var(--text-midtone);text-transform:uppercase">Reconditioning &amp; prep</div>
-            <div style="font-family:var(--text-family-rund-display);font-weight:600;font-size:24px;margin-top:4px">{{ repairsLine }}</div>
-          </div>
-          <sc-if value="{{ notRetail }}" hint-placeholder-val="{{ true }}">
-          <div style="padding-top:12px">
-            <div style="font-size:11px;font-weight:500;letter-spacing:0.03rem;color:var(--text-midtone);text-transform:uppercase">Today's offer</div>
-            <div style="font-family:var(--text-family-rund-display);font-weight:600;font-size:38px;line-height:42px;margin-top:4px;color:var(--color-green-700)">{{ offer }}</div>
-          </div>
-          </sc-if>
-        </div>
-      </div>
-    </div>
-
-    <sc-if value="{{ hasInsp }}" hint-placeholder-val="{{ false }}">
-      <div style="background:var(--surface-primary-1);border:1px solid var(--stroke-secondary-1);border-radius:16px;padding:20px">
-        <div style="display:flex;flex-wrap:wrap;align-items:baseline;gap:8px 16px">
-          <div style="font-family:var(--text-family-rund-display);font-weight:600;font-size:18px">What our in-person inspection found</div>
-          <div style="margin-left:auto;font-size:12px;color:var(--text-midtone)">Repair items: {{ inspOrigTotal }} estimated → <span style="font-weight:500;color:var(--text-primary)">{{ inspDealerTotal }}</span> verified</div>
-        </div>
-        <div style="font-size:13px;color:var(--text-midtone);margin-top:6px;padding-bottom:16px;border-bottom:1px solid var(--stroke-secondary-1);text-wrap:pretty">{{ inspNote }}</div>
-
-        <sc-for list="{{ inspRows }}" as="r" hint-placeholder-count="0">
-          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;padding:18px 0;border-bottom:1px solid var(--stroke-secondary-1);align-items:start">
-            <div style="min-width:0">
-              <div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px">
-                <span style="font-size:15px;font-weight:500">{{ r.name }}</span>
-                <span style="font-size:10px;font-weight:600;letter-spacing:0.02rem;padding:4px 9px;border-radius:4px;background:{{ r.chipBg }};color:{{ r.chipFg }}">{{ r.chip }}</span>
-              </div>
-              <div style="font-size:13px;color:var(--text-midtone);margin-top:6px;line-height:19px;text-wrap:pretty">{{ r.note }}</div>
-              <div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px 18px;margin-top:12px">
-                <div>
-                  <div style="font-size:10px;font-weight:600;letter-spacing:0.03rem;text-transform:uppercase;color:var(--text-midtone)">First estimate</div>
-                  <div style="font-size:14px;margin-top:2px;color:var(--text-midtone)">{{ r.wasLabel }}</div>
-                </div>
-                <div>
-                  <div style="font-size:10px;font-weight:600;letter-spacing:0.03rem;text-transform:uppercase;color:var(--text-midtone)">Verified cost</div>
-                  <div style="font-size:14px;font-weight:500;margin-top:2px">{{ r.nowLabel }}</div>
-                </div>
-                <div>
-                  <div style="font-size:10px;font-weight:600;letter-spacing:0.03rem;text-transform:uppercase;color:var(--text-midtone)">Change</div>
-                  <div style="font-size:14px;font-weight:500;margin-top:2px;color:{{ r.deltaColor }}">{{ r.deltaLabel }}</div>
-                </div>
-              </div>
-            </div>
-            <div style="min-width:0;display:grid;grid-template-columns:1fr 1fr;gap:10px">
-              <div>
-                <div style="font-size:10px;font-weight:600;letter-spacing:0.03rem;text-transform:uppercase;color:var(--text-midtone);margin-bottom:6px">{{ inspOrigLabel }}</div>
-                <sc-if value="{{ r.hasOrigPhoto }}" hint-placeholder-val="{{ false }}">
-                  <img src="{{ r.origPhoto }}" alt="{{ r.name }} as first photographed" style="width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:8px;border:1px solid var(--stroke-secondary-1);display:block">
-                </sc-if>
-                <sc-if value="{{ r.noOrigPhoto }}" hint-placeholder-val="{{ false }}">
-                  <div style="width:100%;aspect-ratio:4/3;border-radius:8px;border:1px dashed var(--stroke-secondary-1);background:var(--surface-primary-2);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--text-midtone);text-align:center;padding:8px;box-sizing:border-box">Not in the first photo set</div>
-                </sc-if>
-              </div>
-              <div>
-                <div style="font-size:10px;font-weight:600;letter-spacing:0.03rem;text-transform:uppercase;color:var(--text-midtone);margin-bottom:6px">Our inspection photo</div>
-                <sc-if value="{{ r.dealerPhoto }}" hint-placeholder-val="{{ false }}">
-                <img src="{{ r.dealerPhoto }}" alt="{{ r.name }} at dealer inspection" style="width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:8px;border:1px solid var(--stroke-secondary-1);display:block">
-                </sc-if>
-              </div>
-            </div>
-          </div>
-        </sc-for>
-
-        <div style="display:flex;flex-wrap:wrap;align-items:center;gap:12px;padding:16px 12px 0;font-size:14px;font-weight:500">
-          <span style="flex:1 1 auto;min-width:0">Repair items</span>
-          <span style="flex:none;color:var(--text-midtone)">{{ inspOrigTotal }}</span>
-          <span style="flex:none">{{ inspDealerTotal }}</span>
-          <span style="flex:none;width:90px;text-align:right;color:var(--color-red-700)">{{ inspNetLabel }}</span>
-        </div>
-        <div style="display:flex;flex-wrap:wrap;align-items:center;gap:12px;padding:10px 12px 0;font-size:13px;color:var(--text-midtone)">
-          <span style="flex:1 1 auto;min-width:0">Certification, transport &amp; pack (not repairs)</span>
-          <span style="flex:none">{{ inspPrepTotal }}</span>
-          <span style="flex:none;width:90px;text-align:right">—</span>
-        </div>
-        <div style="display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin-top:12px;padding:14px 12px;border-top:1px solid var(--stroke-secondary-1);background:var(--surface-primary-2);border-radius:8px;font-size:14px;font-weight:500">
-          <span style="flex:1 1 auto;min-width:0">Reconditioning &amp; prep deducted from your offer</span>
-          <span style="flex:none">{{ inspGrandTotal }}</span>
-          <span style="flex:none;width:90px;text-align:right"></span>
-        </div>
-      </div>
-    </sc-if>
-
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;align-items:start">
-
-      <div style="min-width:0;background:var(--surface-primary-1);border:1px solid var(--stroke-secondary-1);border-radius:16px;padding:16px">
-        <div style="font-family:var(--text-family-rund-display);font-weight:600;font-size:18px;margin-bottom:14px">Condition report</div>
-        <div style="display:flex;flex-direction:column;gap:10px">
-          <sc-for list="{{ checks }}" as="c" hint-placeholder-count="5">
-            <div style="display:flex;align-items:center;gap:12px;padding:12px 14px;border:1px solid var(--stroke-secondary-1);border-radius:8px">
-              <span style="flex:none;width:22px;height:22px;border-radius:60px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;background:{{ c.bg }};color:{{ c.fg }}">{{ c.glyph }}</span>
-              <span style="font-size:14px;font-weight:500">{{ c.label }}</span>
-            </div>
-          </sc-for>
+          <div style="font-family:var(--text-family-rund-display);font-weight:600;font-size:26px;line-height:30px">{{ vehicleTitle }}</div>
+          <div style="font-size:14px;color:var(--text-midtone);margin-top:6px">{{ mileageLine }}</div>
+          <div style="font-size:13px;color:var(--text-midtone);margin-top:4px">{{ specLine }}</div>
+          <div style="display:inline-block;font-size:12px;font-weight:500;letter-spacing:0.0125rem;padding:5px 10px;border-radius:4px;background:var(--surface-primary-2);border:1px solid var(--stroke-secondary-1);color:var(--text-midtone);margin-top:10px">VIN: {{ vin }}</div>
         </div>
       </div>
 
-      <div style="grid-column:span 2;min-width:0;background:var(--surface-primary-1);border:1px solid var(--stroke-secondary-1);border-radius:16px;padding:16px">
-        <div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:6px">
-          <div style="font-family:var(--text-family-rund-display);font-weight:600;font-size:18px">Repair item summary</div>
-          <div style="margin-left:auto;font-size:12px;font-weight:500;padding:6px 12px;border-radius:60px;background:var(--surface-primary-2);border:1px solid var(--stroke-secondary-1)">Total: {{ repairsTotal }}</div>
-        </div>
-        <div style="font-size:12px;color:var(--text-midtone);margin-bottom:12px;text-wrap:pretty">{{ condIntro }}</div>
-        <div style="display:flex;align-items:center;gap:8px;padding:8px 12px;font-size:10px;font-weight:600;letter-spacing:0.03rem;text-transform:uppercase;color:var(--text-midtone);border-bottom:1px solid var(--stroke-secondary-1)">
-          <span style="flex:1 1 auto;min-width:0">Condition</span>
-          <sc-if value="{{ isRetail }}" hint-placeholder-val="{{ true }}">
-            <span style="flex:none;width:136px;text-align:center">Your report → Dealer verified</span>
-          </sc-if>
-          <sc-if value="{{ notRetail }}" hint-placeholder-val="{{ false }}">
-            <span style="flex:none;width:44px;text-align:center">Dealer</span>
-          </sc-if>
-          <span style="flex:none;width:92px;text-align:right">Deduction</span>
-        </div>
-        <sc-for list="{{ condGroups }}" as="g" hint-placeholder-count="3">
-          <div>
-            <div style="font-size:11px;font-weight:700;letter-spacing:0.04rem;text-transform:uppercase;padding:8px 12px;background:var(--surface-primary-2);color:var(--text-primary)">{{ g.title }}</div>
-            <sc-for list="{{ g.rows }}" as="r" hint-placeholder-count="5">
-              <div style="display:flex;align-items:center;gap:8px;padding:10px 12px;border-bottom:1px solid var(--stroke-secondary-1);background:{{ r.rowBg }}">
-                <div style="flex:1 1 auto;min-width:0">
-                  <div style="font-size:13px;font-weight:{{ r.nameWeight }}">{{ r.name }}</div>
-                  <sc-if value="{{ r.meta }}">
-                    <div style="font-size:11px;color:var(--text-midtone);margin-top:2px">{{ r.meta }}</div>
-                  </sc-if>
-                </div>
-                <sc-if value="{{ isRetail }}" hint-placeholder-val="{{ true }}">
-                  <div style="flex:none;width:136px;display:flex;align-items:center;justify-content:center;gap:6px;font-size:12px">
-                    <span style="color:var(--text-midtone);min-width:24px;text-align:right">{{ r.cons }}</span>
-                    <span style="color:var(--text-midtone);min-width:12px;text-align:center">{{ r.arrow }}</span>
-                    <span style="font-weight:600;min-width:24px">{{ r.dealer }}</span>
+      <sc-if value="{{ isItemized }}" hint-placeholder-val="{{ false }}">
+        <div style="padding-top:20px">
+          <div class="cg-keep" style="display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px">
+            <div style="font-family:var(--text-family-rund-display);font-weight:600;font-size:18px">How we got to this number</div>
+            <div style="margin-left:auto;font-size:12px;color:var(--text-midtone)">Amounts are rounded to the nearest $100.</div>
+          </div>
+
+          <div class="cg-keep" style="display:flex;align-items:center;gap:12px;margin-top:12px;padding:12px 14px;border-radius:8px;background:var(--surface-primary-2)">
+            <div style="flex:1 1 auto;min-width:0"><div style="font-size:14px;font-weight:600">Base valuation</div><div style="font-size:12px;color:var(--text-midtone);margin-top:2px;text-wrap:pretty">Our starting value for a {{ vehicleShort }} in average condition.</div></div>
+            <sc-if value="{{ editOn }}" hint-placeholder-val="{{ false }}"><input class="cg-amt" aria-label="Base valuation" value="{{ baseDraft }}" onChange="{{ onBase }}" onBlur="{{ onBaseBlur }}" onKeyDown="{{ onBaseKey }}" inputmode="numeric"></sc-if>
+            <sc-if value="{{ notEditing }}" hint-placeholder-val="{{ true }}"><div style="flex:none;font-size:16px;font-weight:600">{{ baseLabel }}</div></sc-if>
+          </div>
+
+          <div class="cg-groups">
+          <sc-for list="{{ groups }}" as="g" hint-placeholder-count="5">
+            <div class="cg-keep" style="margin-top:14px">
+              <div class="cg-gt" style="font-size:11px;font-weight:700;letter-spacing:0.04rem;text-transform:uppercase;color:var(--text-midtone);padding:0 2px 6px;border-bottom:1px solid var(--stroke-secondary-1)">{{ g.title }}</div>
+              <sc-for list="{{ g.rows }}" as="r" hint-placeholder-count="2">
+                <div class="cg-row" style="display:flex;align-items:flex-start;gap:12px;padding:10px 2px;border-bottom:1px solid var(--stroke-secondary-1)">
+                  <div style="flex:1 1 auto;min-width:0">
+                    <div style="font-size:14px;font-weight:500">{{ r.label }}</div>
+                    <div class="cg-note" style="font-size:12px;color:var(--text-midtone);margin-top:2px;line-height:17px;text-wrap:pretty">{{ r.note }}</div>
+                    <sc-if value="{{ r.code }}" hint-placeholder-val="{{ false }}"><div class="cg-code" style="font-size:11px;color:var(--text-midtone);margin-top:2px">Detail: {{ r.code }}</div></sc-if>
                   </div>
-                </sc-if>
-                <sc-if value="{{ notRetail }}" hint-placeholder-val="{{ false }}">
-                  <div style="flex:none;width:44px;text-align:center;font-size:12px;font-weight:600">{{ r.dealer }}</div>
-                </sc-if>
-                <div style="flex:none;width:92px;text-align:right;font-size:12px;font-weight:600;color:{{ r.effectColor }}">{{ r.effect }}</div>
-              </div>
-            </sc-for>
-          </div>
-        </sc-for>
-        <div style="display:flex;flex-direction:column;gap:8px;margin-top:14px;padding:12px;border-radius:8px;background:var(--surface-primary-2);font-size:13px">
-          <sc-for list="{{ condTotals }}" as="t" hint-placeholder-count="3">
-            <div style="display:flex;flex-wrap:wrap;gap:4px 12px;align-items:baseline">
-              <span style="flex:1 1 auto;min-width:0;color:{{ t.labelColor }};font-weight:{{ t.weight }}">{{ t.label }}</span>
-              <span style="flex:none;color:var(--text-midtone)">{{ t.was }}</span>
-              <span style="flex:none;font-weight:{{ t.weight }}">{{ t.now }}</span>
+                  <sc-if value="{{ r.editing }}" hint-placeholder-val="{{ false }}"><input class="cg-amt" aria-label="{{ r.label }} amount" value="{{ r.draft }}" onChange="{{ r.onAmt }}" onBlur="{{ r.onBlur }}" onKeyDown="{{ r.onKey }}" inputmode="numeric"></sc-if>
+                  <sc-if value="{{ r.showStatic }}" hint-placeholder-val="{{ true }}"><div style="flex:none;font-size:14px;font-weight:600;color:{{ r.color }};white-space:nowrap">{{ r.amount }}</div></sc-if>
+                </div>
+              </sc-for>
             </div>
           </sc-for>
-        </div>
-      </div>
-    </div>
+          </div>
 
+          <div class="cg-keep cg-sum" style="display:flex;flex-direction:column;gap:6px;margin-top:16px;padding:14px;border-radius:8px;background:var(--surface-primary-2);font-size:13px">
+            <div style="display:flex;gap:12px"><span style="flex:1 1 auto;color:var(--text-midtone)">Base valuation</span><span style="flex:none">{{ baseLabel }}</span></div>
+            <div style="display:flex;gap:12px"><span style="flex:1 1 auto;color:var(--text-midtone)">Additions</span><span style="flex:none;color:var(--color-green-700);font-weight:500">{{ addsLabel }}</span></div>
+            <div style="display:flex;gap:12px"><span style="flex:1 1 auto;color:var(--text-midtone)">Deductions</span><span style="flex:none;color:var(--color-red-700);font-weight:500">{{ dedsLabel }}</span></div>
+            <div style="display:flex;gap:12px;align-items:baseline;padding-top:8px;margin-top:2px;border-top:1px solid var(--stroke-secondary-2)"><span style="flex:1 1 auto;font-size:15px;font-weight:600">Your offer</span><span style="flex:none;font-family:var(--text-family-rund-display);font-size:24px;font-weight:600">{{ offerLabel }}</span></div>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ hasInternals }}" hint-placeholder-val="{{ false }}">
+        <div class="cg-keep" style="margin-top:20px;padding:14px 16px;border:1px solid var(--stroke-secondary-1);border-radius:8px">
+          <div style="font-size:11px;font-weight:700;letter-spacing:0.04rem;text-transform:uppercase;color:var(--text-midtone);margin-bottom:6px">Additional valuation details</div>
+          <sc-for list="{{ internals }}" as="n" hint-placeholder-count="3">
+            <div style="display:flex;gap:12px;padding:5px 0;font-size:13px"><span style="flex:1 1 auto;color:var(--text-midtone)">{{ n.label }}</span><span style="flex:none;font-weight:500">{{ n.value }}</span></div>
+          </sc-for>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isItemized }}" hint-placeholder-val="{{ false }}">
+        <div class="cg-pagebreak" style="padding-top:24px">
+          <div class="cg-keep">
+            <div style="font-family:var(--text-family-rund-display);font-weight:600;font-size:18px">Condition and damage</div>
+            <div style="display:flex;flex-wrap:wrap;gap:16px 28px;align-items:center;margin-top:12px">
+              <div class="cg-diag" aria-label="Vehicle damage diagram" style="flex:none;width:200px">{{ damageSvg }}</div>
+              <div style="flex:1 1 260px;min-width:0">
+                <div style="display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12px;color:var(--text-midtone)">
+                  <span style="display:inline-flex;align-items:center;gap:6px"><span style="width:14px;height:14px;border-radius:3px;background:var(--color-red-600);display:inline-block"></span>Major damage</span>
+                  <span style="display:inline-flex;align-items:center;gap:6px"><span style="width:14px;height:14px;border-radius:3px;background:var(--color-yellow-500);display:inline-block"></span>Minor damage</span>
+                  <span style="display:inline-flex;align-items:center;gap:6px"><span style="width:14px;height:14px;border-radius:3px;background:var(--surface-primary-2);border:1px solid var(--stroke-secondary-2);display:inline-block;box-sizing:border-box"></span>No issue noted</span>
+                </div>
+                <div style="margin-top:12px;display:flex;flex-direction:column;gap:8px">
+                  <sc-for list="{{ damageList }}" as="m" hint-placeholder-count="4">
+                    <div style="display:flex;align-items:center;gap:8px;font-size:13px"><span style="flex:none;width:10px;height:10px;border-radius:60px;background:{{ m.dot }}"></span><span style="flex:1 1 auto;min-width:0">{{ m.label }}</span><span style="flex:none;color:var(--text-midtone);font-size:12px">{{ m.sev }}</span></div>
+                  </sc-for>
+                  <sc-if value="{{ noDamage }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;color:var(--text-midtone)">No damage noted.</div></sc-if>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="cg-keep" style="margin-top:24px">
+            <div style="font-family:var(--text-family-rund-display);font-weight:600;font-size:18px">Warning lights and scan results</div>
+            <div style="font-size:12px;color:var(--text-midtone);margin-top:4px">What the vehicle's on-board computer reported when we scanned it.</div>
+            <div style="margin-top:10px;border:1px solid var(--stroke-secondary-1);border-radius:8px;overflow:hidden">
+              <div style="display:grid;grid-template-columns:minmax(0,1.3fr) 76px minmax(0,2fr) 90px;gap:10px;padding:8px 12px;background:var(--surface-primary-2);font-size:10px;font-weight:600;letter-spacing:0.03rem;text-transform:uppercase;color:var(--text-midtone)"><span>Check</span><span>Result</span><span>What it means</span><span style="text-align:right">Deduction</span></div>
+              <sc-for list="{{ diag }}" as="x" hint-placeholder-count="5">
+                <div class="cg-xrow" style="display:grid;grid-template-columns:minmax(0,1.3fr) 76px minmax(0,2fr) 90px;gap:10px;align-items:start;padding:10px 12px;border-top:1px solid var(--stroke-secondary-1);font-size:13px">
+                  <div style="min-width:0"><div style="font-weight:500">{{ x.label }}</div><div style="font-size:11px;color:var(--text-midtone);margin-top:2px">{{ x.codeLine }}</div></div>
+                  <span style="justify-self:start;font-size:11px;font-weight:600;padding:3px 9px;border-radius:4px;background:{{ x.chipBg }};color:{{ x.chipFg }}">{{ x.chip }}</span>
+                  <div style="font-size:12px;color:var(--text-midtone);line-height:17px;text-wrap:pretty">{{ x.meaning }}</div>
+                  <div style="text-align:right;font-weight:600;color:{{ x.color }}">{{ x.amount }}</div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ worksheetOn }}" hint-placeholder-val="{{ false }}">
+        <div class="cg-keep cg-ws" style="margin-top:24px;padding:16px;border:1px solid var(--stroke-secondary-1);border-radius:8px">
+          <div style="display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px"><div style="font-family:var(--text-family-rund-display);font-weight:600;font-size:18px">Deal worksheet</div><div style="margin-left:auto;font-size:12px;color:var(--text-midtone)">Estimates only</div></div>
+          <div style="display:flex;flex-direction:column;margin-top:8px;font-size:14px">
+            <div style="display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid var(--stroke-secondary-1)"><span style="flex:1 1 auto">Trade-in offer</span><span style="font-weight:600">{{ offerLabel }}</span></div>
+            <div style="display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid var(--stroke-secondary-1)"><span style="flex:1 1 auto">Payoff or lien balance</span><span style="display:inline-flex;align-items:center;gap:2px">$<input class="cg-line" aria-label="Payoff or lien balance" value="{{ wsPayoff }}" onChange="{{ onPayoff }}" inputmode="numeric"></span></div>
+            <div style="display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid var(--stroke-secondary-1)"><span style="flex:1 1 auto">{{ equityLabel }}</span><span style="font-weight:600;color:{{ equityColor }}">{{ equityValue }}</span></div>
+            <div style="display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid var(--stroke-secondary-1)"><span style="flex:1 1 auto">Amount financed</span><span style="display:inline-flex;align-items:center;gap:2px">$<input class="cg-line" aria-label="Amount financed" value="{{ wsFinanced }}" onChange="{{ onFinanced }}" inputmode="numeric"></span></div>
+            <div style="display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid var(--stroke-secondary-1)"><span style="flex:1 1 auto">APR</span><span style="display:inline-flex;align-items:center;gap:2px"><input class="cg-line" aria-label="APR" value="{{ wsApr }}" onChange="{{ onApr }}" inputmode="decimal" style="width:70px">%</span></div>
+            <div style="display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid var(--stroke-secondary-1)"><span style="flex:1 1 auto">Term (months)</span><input class="cg-line" aria-label="Term in months" value="{{ wsTerm }}" onChange="{{ onTerm }}" inputmode="numeric" style="width:70px"></div>
+            <div style="display:flex;align-items:baseline;gap:12px;padding:10px 0 2px"><span style="flex:1 1 auto;font-weight:600">Estimated monthly payment</span><span style="font-family:var(--text-family-rund-display);font-size:22px;font-weight:600">{{ paymentLabel }}</span></div>
+          </div>
+          <div style="font-size:11px;color:var(--text-midtone);margin-top:8px;text-wrap:pretty">Estimates for illustration only, not an offer of credit. Taxes, fees and your approved rate will change the final figures.</div>
+        </div>
+      </sc-if>
+
+      <div class="cg-keep cg-sign" style="margin-top:28px;padding-top:18px;border-top:1px solid var(--stroke-secondary-1)">
+        <div style="font-size:13px;text-wrap:pretty">I accept this offer of <strong>{{ offerLabel }}</strong> for the vehicle described above.</div>
+        <div style="display:flex;flex-wrap:wrap;gap:18px 32px;margin-top:30px">
+          <div style="flex:1 1 220px;min-width:0"><div style="border-bottom:1px solid var(--text-primary);height:28px"></div><div style="font-size:11px;color:var(--text-midtone);margin-top:4px">Customer signature</div></div>
+          <div style="flex:0 1 150px;min-width:110px"><div style="border-bottom:1px solid var(--text-primary);height:28px"></div><div style="font-size:11px;color:var(--text-midtone);margin-top:4px">Date</div></div>
+          <div style="flex:1 1 220px;min-width:0"><div style="border-bottom:1px solid var(--text-primary);height:28px"></div><div style="font-size:11px;color:var(--text-midtone);margin-top:4px">{{ dealerName }} representative</div></div>
+        </div>
+        <div style="font-size:11px;color:var(--text-midtone);margin-top:16px;text-wrap:pretty">Offer is subject to verification of vehicle condition, mileage and clear title at the dealership, and is valid through {{ validThrough }}.</div>
+      </div>
+
+    </div>
   </div>
 </div>
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1000},&quot;payload&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;object&quot;},&quot;onClose&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;() =&gt; void&quot;}}">
+// Sample payload used when the sheet is opened on its own. Dealer-internal values (book value, margin, recon, books) are only shown if the dealer turns them on.
 const FALLBACK = {
-  mode: "smc",
+  mode: "sv",
   customerFirst: "Fran",
+  dealerName: "Prime Motors", appraiser: "D. Mercer",
   vin: "5UXCR6C05LLL62999",
   year: "2020", make: "BMW", model: "X5", trim: "xDrive40i",
   odo: "45,000", engine: "3.0L 6-Cylinder", trans: "8-spd automatic", body: "SUV", color: "Alpine White",
-  bookName: "CarGurus IMV", bookValue: 34712, bookBasis: "Trade-in",
-  marginPct: 20, marginDeduct: 6942,
-  repairs: 3280,
-  offer: 24490,
-  initial: { sent: "Sep 12", bookName: "CarGurus IMV", bookValue: 35500, marginPct: 20, marginDeduct: 7100, costs: 2950, prep: 1650, details: { odo: "38,000" }, offer: 25450 },
-  overrideReason: "",
-  aiItems: [
-    { name: "Front bumper scuff", meta: "Minor · AI photo review", cost: 420 },
-    { name: "Rear tire wear", meta: "Moderate · AI photo review", cost: 620 },
-    { name: "Alloy wheel curb rash (2)", meta: "Moderate · AI photo review", cost: 260 },
-    { name: "Windshield chip, passenger side", meta: "Minor · AI photo review", cost: 180 },
-    { name: "Driver seat bolster wear", meta: "Minor · AI photo review", cost: 150 }
-  ],
-  costItems: [
-    { name: "Certification", cost: 1150 },
-    { name: "Transportation", cost: 0 },
-    { name: "Pack", cost: 500 }
-  ],
-  grade: "Good"
+  bookName: "CarGurus IMV", bookValue: 34712, marginDeduct: 6942,
+  repairs: 3280, offer: 24785,
+  books: [{ name: "MMR", value: 34052 }, { name: "J.D. Power", value: 33382 }, { name: "Black Book", value: 33782 }],
+  initial: null,
+  aiItems: []
 };
 
-const COND_GROUPS = [
-  { title: "Exterior", items: ["Exterior damage", "Scratches", "Chips", "Scuffs", "Faded paint", "Dents", "Dings", "Rust", "Hail damage", "Windshield damage", "Bad tires"] },
-  { title: "Interior", items: ["Manual transmission", "Mechanical defects", "Smoker"] },
-  { title: "Other", items: ["Rough condition", "Not driveable", "Accidents", "Aftermarket parts", "One key only"] }
+const SETTINGS_KEY = "cg-offer-settings";
+const SET_DEFAULT = { mode: "simple", layout: "standard", worksheet: false, show: { imv: false, books: false, recon: false } };
+const r100 = n => Math.round((Number(n) || 0) / 100) * 100;
+const parseSigned = v => { const s = String(v); const neg = /^\s*[-−(]/.test(s); const n = parseInt(s.replace(/[^0-9]/g, ""), 10); return isNaN(n) ? 0 : (neg ? -n : n); };
+const parseNum = v => { const n = parseFloat(String(v).replace(/[^0-9.]/g, "")); return isNaN(n) ? 0 : n; };
+
+// SAMPLE items for the customer sheet: amounts are illustrative, not market data. Positive = addition, negative = deduction.
+// panel = diagram panel(s); sev = "major" (red) or "minor" (yellow).
+const CATS = [["options", "Options & equipment"], ["mileage", "Mileage"], ["history", "History & owners"], ["condition", "Condition & damage"], ["codes", "Warning lights & codes"]];
+const SAMPLE_ITEMS = [
+  { id: "o1", cat: "options", label: "Premium Package", note: "Leather and heated seats plus upgraded trim. Buyers pay more for this.", amount: 600 },
+  { id: "o2", cat: "options", label: "Panoramic moonroof", note: "A popular feature that helps resale value.", amount: 400 },
+  { id: "o3", cat: "options", label: "Harman Kardon sound system", note: "Upgraded audio that buyers look for.", amount: 200 },
+  { id: "m1", cat: "mileage", label: "Mileage", note: "", amount: 0, showZero: true },
+  { id: "h1", cat: "history", label: "3 previous owners", note: "More owners than average lowers what buyers will pay.", amount: -300 },
+  { id: "h2", cat: "history", label: "1 accident reported", note: "An accident on the history report lowers resale value, even after repair.", amount: -800 },
+  { id: "c1", cat: "condition", label: "Front bumper needs replacement", note: "The bumper cover is cracked and the support behind it is bent.", code: "Front bumper · structural", amount: -700, sev: "major", panel: ["front-bumper"] },
+  { id: "c2", cat: "condition", label: "Rear tires are worn", note: "Tread is below the legal limit, so both rear tires need replacing.", code: "Rear tires · 2/32 in. tread", amount: -600, sev: "minor", panel: ["wheel-rl", "wheel-rr"] },
+  { id: "c3", cat: "condition", label: "Scraped alloy wheels", note: "Two wheels have curb damage that needs refinishing.", code: "Front wheels · curb rash", amount: -300, sev: "minor", panel: ["wheel-fl", "wheel-fr"] },
+  { id: "c4", cat: "condition", label: "Small windshield chip", note: "A chip on the passenger side. Repairing it now prevents a crack.", code: "Windshield · passenger side", amount: -100, sev: "minor", panel: ["windshield"] },
+  { id: "c5", cat: "condition", label: "Driver seat wear", note: "The seat edge shows wear from regular use.", code: "Interior · driver bolster", amount: -200, sev: "minor", panel: [] },
+  { id: "w1", cat: "codes", label: "Check-engine light is on", note: "The exhaust system isn't cleaning emissions as well as it should.", code: "P0420", status: "fail", amount: -1000 },
+  { id: "w2", cat: "codes", label: "Tire-pressure warning", note: "A tire-pressure sensor isn't reporting.", code: "C0750", status: "warn", amount: -100 },
+  { id: "w3", cat: "codes", label: "Brakes and ABS", note: "No fault codes found.", code: "No codes", status: "pass", amount: 0 },
+  { id: "w4", cat: "codes", label: "Airbags", note: "No fault codes found.", code: "No codes", status: "pass", amount: 0 }
 ];
-const COND_MAP = [
-  [/scuff/i, "Scuffs"], [/windshield/i, "Windshield damage"], [/tire/i, "Bad tires"],
-  [/wheel|curb|scratch/i, "Scratches"], [/dent/i, "Dents"], [/ding/i, "Dings"],
-  [/rust/i, "Rust"], [/hail/i, "Hail damage"], [/paint|fad/i, "Faded paint"], [/chip/i, "Chips"]
-];
-const DEFAULT_REPORTED = ["Front bumper scuff", "Rear tire wear", "Alloy wheel curb rash (2)"];
+// Words that map an inspection item to a diagram panel (used when real items arrive in payload.aiItems).
+const PANEL_MAP = [[/rear.*bumper|bumper.*rear/i, ["rear-bumper"]], [/bumper|scuff|grille|headlight/i, ["front-bumper"]], [/windshield/i, ["windshield"]], [/rear.*(window|glass)/i, ["rear-window"]], [/hood/i, ["hood"]], [/roof|hail/i, ["roof"]], [/trunk|liftgate|tailgate/i, ["trunk"]], [/tire|wheel|rim|curb/i, ["wheel-fl", "wheel-fr"]], [/door|dent|ding|scratch|paint|rust/i, ["door-fr"]]];
+
+const PANELS = {
+  "front-bumper": ["rect", { x: 48, y: 12, width: 124, height: 26, rx: 12 }], "hood": ["rect", { x: 54, y: 42, width: 112, height: 72, rx: 8 }],
+  "windshield": ["path", { d: "M62 118 L158 118 L148 160 L72 160 Z" }], "roof": ["rect", { x: 72, y: 164, width: 76, height: 96, rx: 6 }],
+  "rear-window": ["path", { d: "M72 264 L148 264 L158 300 L62 300 Z" }], "trunk": ["rect", { x: 54, y: 304, width: 112, height: 58, rx: 8 }],
+  "rear-bumper": ["rect", { x: 48, y: 366, width: 124, height: 26, rx: 12 }],
+  "door-fl": ["rect", { x: 28, y: 120, width: 36, height: 70, rx: 6 }], "door-rl": ["rect", { x: 28, y: 194, width: 36, height: 70, rx: 6 }],
+  "door-fr": ["rect", { x: 156, y: 120, width: 36, height: 70, rx: 6 }], "door-rr": ["rect", { x: 156, y: 194, width: 36, height: 70, rx: 6 }],
+  "wheel-fl": ["rect", { x: 14, y: 62, width: 16, height: 40, rx: 5 }], "wheel-fr": ["rect", { x: 190, y: 62, width: 16, height: 40, rx: 5 }],
+  "wheel-rl": ["rect", { x: 14, y: 290, width: 16, height: 40, rx: 5 }], "wheel-rr": ["rect", { x: 190, y: 290, width: 16, height: 40, rx: 5 }]
+};
+const PANEL_NAMES = { "front-bumper": "Front bumper", "hood": "Hood", "windshield": "Windshield", "roof": "Roof", "rear-window": "Rear window", "trunk": "Trunk", "rear-bumper": "Rear bumper", "door-fl": "Front left door", "door-rl": "Rear left door", "door-fr": "Front right door", "door-rr": "Rear right door", "wheel-fl": "Front left wheel", "wheel-fr": "Front right wheel", "wheel-rl": "Rear left wheel", "wheel-rr": "Rear right wheel" };
+
+const ONES = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen"];
+const TENS = ["", "", "twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety"];
+const words = n => { if (n < 20) return ONES[n]; if (n < 100) return TENS[Math.floor(n / 10)] + (n % 10 ? "-" + ONES[n % 10] : ""); if (n < 1000) return ONES[Math.floor(n / 100)] + " hundred" + (n % 100 ? " " + words(n % 100) : ""); return words(Math.floor(n / 1000)) + " thousand" + (n % 1000 ? " " + words(n % 1000) : ""); };
 
 class Component extends DCLogic {
-  state = { data: null };
+  state = { panel: false, data: null, set: { ...SET_DEFAULT, show: { ...SET_DEFAULT.show } }, edit: false, amt: {}, draft: {}, baseAmt: null, baseDraft: null, override: null, overrideDraft: null, ws: { payoff: "12,000", financed: "28,000", apr: "6.9", term: "60" } };
 
+  componentWillUnmount() { document.removeEventListener("keydown", this.onKey); }
   componentDidMount() {
+    this.onKey = e => { if (e.key === "Escape" && this.state.panel) this.setState({ panel: false }); };
+    document.addEventListener("keydown", this.onKey);
+    try {
+      const raw = localStorage.getItem(SETTINGS_KEY);
+      if (raw) { const p = JSON.parse(raw); this.setState({ set: { ...SET_DEFAULT, ...p, show: { ...SET_DEFAULT.show, ...(p.show || {}) } } }); }
+    } catch (e) {}
     if (this.props.payload || !(window.opener && !window.opener.closed)) return;
     try {
       const raw = localStorage.getItem("cg-customer-offer");
@@ -304,271 +386,144 @@ class Component extends DCLogic {
   }
 
   money(n) { return "$" + Math.round(n || 0).toLocaleString("en-US"); }
+  signed(n) { return (n > 0 ? "+" : n < 0 ? "−" : "") + this.money(Math.abs(n)); }
+  // Takes a function of the latest settings so quick successive changes never overwrite each other.
+  saveSet(fn) { this.setState(st => { const next = fn(st.set); try { localStorage.setItem(SETTINGS_KEY, JSON.stringify(next)); } catch (e) {} return { set: next }; }); }
+
+  // The line items for this sheet: samples, with condition items replaced by real inspection items when the payload has them.
+  items(d) {
+    const real = (d.aiItems || []).filter(i => i && i.name);
+    const base = real.length ? SAMPLE_ITEMS.filter(i => i.cat !== "condition").concat(real.map((i, k) => {
+      const hit = PANEL_MAP.find(([re]) => re.test(i.name)), major = /major|severe/i.test(i.meta || "") || (i.cost || 0) >= 700;
+      return { id: "ai" + k, cat: "condition", label: i.name, note: i.meta ? String(i.meta).replace(/ ·.*$/, "") + " damage found at inspection." : "Found at inspection.", code: i.meta || "", amount: -r100(i.cost || 0), sev: major ? "major" : "minor", panel: hit ? hit[1] : [] };
+    })) : SAMPLE_ITEMS;
+    return base.map(it => ({ ...it }));
+  }
 
   renderVals() {
     const d = { ...FALLBACK, ...(this.props.payload || this.state.data || {}) };
-    const name = (d.customerFirst || "").trim();
+    const s = this.state, set = s.set, show = set.show, edit = s.edit && set.mode === "itemized";
+    const itemized = set.mode === "itemized";
     const mileage = parseInt(String(d.odo).replace(/[^0-9]/g, ""), 10) || 0;
-    const lowMiles = mileage > 0 && mileage < 60000;
-    const aiRows = (d.aiItems || []).map(i => ({ name: i.name, meta: i.meta || "", cost: i.cost ? this.money(i.cost) : "0" }));
-    const costRows = (d.costItems || []).map(i => ({ name: i.name, meta: "", cost: i.cost ? this.money(i.cost) : "0" }));
-    const groups = [];
-    if (aiRows.length) groups.push({ title: "Inspection items", rows: aiRows });
-    if (costRows.length) groups.push({ title: "Reconditioning & prep", rows: costRows });
 
-    const ok = { glyph: "✓", bg: "var(--color-green-600)", fg: "#fff" };
-    const warn = { glyph: "!", bg: "var(--color-yellow-500)", fg: "var(--text-primary)" };
-    const itemCount = (d.aiItems || []).length;
-    const checks = [
-      { label: "Title status: clean", ...ok },
-      { label: "No accidents reported", ...ok },
-      ...(itemCount > 0
-        ? [{ label: itemCount + (itemCount === 1 ? " condition item noted" : " condition items noted"), ...warn }]
-        : [{ label: "No condition items noted", ...ok }]),
-      { label: "No open recalls", ...ok },
-      { label: lowMiles ? "Mileage below market average" : "Mileage above market average", ...(lowMiles ? ok : warn) }
-    ];
+    // --- the offer math: every amount is a multiple of $100, so base + additions - deductions is exact ---
+    const items = this.items(d).map(it => ({ ...it, amount: s.amt[it.id] != null ? s.amt[it.id] : it.amount }));
+    const defAdj = this.items(d).reduce((t, it) => t + it.amount, 0);
+    const base = s.baseAmt != null ? s.baseAmt : Math.max(0, r100(d.offer) - defAdj);
+    const adds = items.filter(it => it.amount > 0).reduce((t, it) => t + it.amount, 0);
+    const deds = items.filter(it => it.amount < 0).reduce((t, it) => t - it.amount, 0);
+    const computed = base + adds - deds;
+    const offer = s.override != null ? r100(s.override) : computed;
 
-    const pos = { tag: "POSITIVE", bg: "var(--color-green-300)", fg: "var(--color-green-700)" };
-    const neu = { tag: "NO IMPACT", bg: "var(--surface-primary-2)", fg: "var(--text-midtone)" };
-    const insights = [
-      { label: "Mileage", ...(lowMiles ? pos : neu), note: lowMiles
-          ? d.odo + " mi is below average for a " + d.year + " " + d.model + " — it helps your offer."
-          : d.odo + " mi is near the market average for this vehicle." },
-      { label: "Color", ...neu, note: (d.color || "—") + " is a common color in this market." },
-      { label: "Equipment", ...pos, note: (d.trim || "Base") + " trim with in-demand equipment for this model." },
-      { label: "Supply & demand", ...neu, note: "Balanced supply with steady demand in your area." }
-    ];
+    const name = (d.customerFirst || "").trim();
+    const today = new Date(), valid = new Date(Date.now() + 7 * 864e5);
+    const fmt = (dt, o) => dt.toLocaleDateString("en-US", o);
+    const vehicleTitle = [d.year, d.make, d.model, d.trim].filter(Boolean).join(" ");
+    const vehicleShort = [d.year, d.make, d.model].filter(Boolean).join(" ");
 
-    const init = d.initial;
-    const isRetail = !!init;
-    let initialRows = [], finalRows = [], deltaRows = [], offerDelta = "", offerDeltaColor = "", offerDeltaNote = "", initialOfferLabel = "", initialSentNote = "";
-    if (init) {
-      const diff = (d.offer || 0) - (init.offer || 0);
-      const signed = n => (n > 0 ? "+" : n < 0 ? "−" : "") + this.money(Math.abs(n));
-      initialOfferLabel = this.money(init.offer);
-      initialSentNote = "Sent online " + (init.sent || "") + " · accepted by you";
-      initialRows = [
-        { label: init.bookName + " value", value: this.money(init.bookValue), muted: false },
-        { label: "Dealer margin (" + init.marginPct + "%)", value: "− " + this.money(init.marginDeduct), muted: false },
-        { label: "Estimated reconditioning & prep", value: "− " + this.money(init.costs), muted: false }
-      ];
-      finalRows = [
-        { label: d.bookName + " value (re-checked today)", value: this.money(d.bookValue), muted: false },
-        { label: "Dealer margin" + (d.marginPct ? " (" + d.marginPct + "%)" : ""), value: "− " + this.money(d.marginDeduct || 0), muted: false },
-        { label: "Verified reconditioning & prep", value: "− " + this.money(d.repairs), muted: false }
-      ];
-      const calc = (d.bookValue || 0) - (d.marginDeduct || 0) - (d.repairs || 0);
-      const adj = (d.offer || 0) - calc;
-      deltaRows = [
-        { label: "Book value", was: this.money(init.bookValue), now: this.money(d.bookValue), delta: signed((d.bookValue || 0) - (init.bookValue || 0)) },
-        { label: "Dealer margin", was: this.money(init.marginDeduct), now: this.money(d.marginDeduct || 0), delta: signed(-((d.marginDeduct || 0) - (init.marginDeduct || 0))) },
-        { label: "Reconditioning & prep total", was: this.money(init.costs), now: this.money(d.repairs), delta: signed(-((d.repairs || 0) - (init.costs || 0))) },
-        ...(adj !== 0 ? [{ label: "Dealer adjustment", was: "—", now: signed(adj), delta: signed(adj) }] : [])
-      ].map(r => ({ ...r, deltaColor: r.delta.startsWith("+") ? "var(--color-green-700)" : r.delta.startsWith("−") ? "var(--color-red-700)" : "var(--text-midtone)" }));
-      offerDelta = signed(diff);
-      offerDeltaColor = diff > 0 ? "var(--color-green-700)" : diff < 0 ? "var(--color-red-700)" : "var(--text-midtone)";
-      const dBook = (d.bookValue || 0) - (init.bookValue || 0);
-      const dMargin = (d.marginDeduct || 0) - (init.marginDeduct || 0);
-      const dRecon = (d.repairs || 0) - (init.costs || 0);
-      const reasons = [];
-      if (dRecon !== 0) reasons.push(dRecon > 0
-        ? "the in-person inspection verified more reconditioning work than the online estimate"
-        : "the in-person inspection found less reconditioning work than the online estimate");
-      if (dBook !== 0) reasons.push(dBook > 0
-        ? "market value for your vehicle moved up since your online offer"
-        : "market value for your vehicle moved down since your online offer");
-      if (dMargin !== 0) reasons.push("the dealer's margin on this vehicle was updated");
-      if (adj !== 0) reasons.push(adj > 0
-        ? "the dealer added an adjustment in your favor"
-        : "the dealer applied an adjustment after the in-person appraisal");
-      offerDeltaNote = diff === 0 && reasons.length === 0
-        ? "Your in-person appraisal confirmed the online offer — no change."
-        : reasons.length === 1
-          ? "Your offer changed because " + reasons[0] + "."
-          : reasons.length > 1
-            ? "A few things moved since your online offer — see the breakdown below."
-            : "Your in-person appraisal confirmed the online offer math — no change to the drivers below.";
-    }
-
-    const assigned = {};
-    const otherNames = [];
-    let initAssigned = 0, dealerAssigned = 0;
-    const reported = new Set((init && init.reported) || DEFAULT_REPORTED);
-    (d.aiItems || []).forEach(it => {
-      const hit = COND_MAP.find(([re]) => re.test(it.name));
-      const cost = it.cost || 0;
-      if (hit) {
-        const a = assigned[hit[1]] || (assigned[hit[1]] = { cost: 0, rep: false });
-        a.cost += cost;
-        if (reported.has(it.name)) { a.rep = true; initAssigned += cost; }
-        dealerAssigned += cost;
-      } else otherNames.push(it.name);
+    // --- line item rows grouped by category ---
+    const mileNote = a => a > 0 ? d.odo + " mi is low for the age of the vehicle, which helps the value." : a < 0 ? d.odo + " mi is high for the age of the vehicle, which lowers the value." : d.odo + " mi is typical for the age of the vehicle, so there is no adjustment.";
+    const commitRow = id => () => this.setState(st => { const dd = { ...st.draft }, raw = dd[id]; delete dd[id]; return raw != null ? { draft: dd, amt: { ...st.amt, [id]: r100(parseSigned(raw)) } } : { draft: dd }; });
+    const keyFor = commit => e => { if (e.key === "Enter") { e.preventDefault(); commit(); e.target.blur(); } };
+    const commitBase = () => this.setState(st => st.baseDraft != null ? { baseDraft: null, baseAmt: Math.max(0, r100(parseSigned(st.baseDraft))) } : {});
+    const commitOverride = () => this.setState(st => { const raw = st.overrideDraft; if (raw == null) return {}; const n = parseNum(raw); return { overrideDraft: null, override: raw.trim() === "" || n <= 0 ? null : r100(n) }; });
+    const groups = CATS.map(([cat, title]) => {
+      const vis = items.filter(it => it.cat === cat && (it.amount !== 0 || it.showZero));
+      const rows = vis.map(it => {
+        const dr = s.draft[it.id];
+        return { label: it.label, note: it.cat === "mileage" ? mileNote(it.amount) : it.note, code: it.code && it.cat !== "history" ? it.code : "",
+          amount: it.amount === 0 ? "No adjustment" : this.signed(it.amount), color: it.amount > 0 ? "var(--color-green-700)" : it.amount < 0 ? "var(--color-red-700)" : "var(--text-midtone)",
+          editing: edit, showStatic: !edit, draft: dr != null ? dr : String(it.amount),
+          onAmt: e => this.setState(st => ({ draft: { ...st.draft, [it.id]: e.target.value } })),
+          onBlur: commitRow(it.id), onKey: keyFor(commitRow(it.id)) };
+      });
+      return { title, rows: rows.length ? rows : [{ label: "No adjustment", note: "Nothing in this category changes the value.", code: "", amount: "", color: "var(--text-midtone)", editing: false, showStatic: true, draft: "", onAmt: () => {}, onBlur: () => {} }] };
     });
-    const prepSum = (d.costItems || []).filter(c => !/^recon/i.test(c.name)).reduce((s, c) => s + (c.cost || 0), 0);
-    const otherDealer = (d.repairs || 0) - prepSum - dealerAssigned;
-    const otherInit = init ? (init.costs || 0) - prepSum - initAssigned : 0;
-    let changedCount = 0;
-    const dedLabel = n => "▾ " + this.money(n);
-    const condGroups = COND_GROUPS.map(g => ({
-      title: g.title,
-      rows: g.items.map(name => {
-        const a = assigned[name];
-        const dYes = !!a;
-        const cYes = !!(a && a.rep);
-        const changed = isRetail && cYes !== dYes;
-        if (changed) changedCount++;
-        return {
-          name, meta: "",
-          cons: isRetail ? (cYes ? "Yes" : "No") : "",
-          arrow: isRetail && changed ? ">" : "",
-          dealer: dYes ? "Yes" : "No",
-          effect: dYes ? (a.cost > 0 ? dedLabel(a.cost) : "No Change") : "",
-          effectColor: dYes && a.cost > 0 ? "var(--color-red-700)" : "var(--text-midtone)",
-          rowBg: changed ? "var(--color-yellow-300)" : "transparent",
-          nameWeight: dYes ? 500 : 400
-        };
-      })
-    }));
-    if (otherDealer !== 0 || otherInit !== 0) {
-      const changed = isRetail && otherDealer !== otherInit;
-      if (changed) changedCount++;
-      const other = condGroups[condGroups.length - 1];
-      other.rows.push({
-        name: "Other adjustments",
-        meta: otherNames.length ? otherNames.join(", ") : "Reconditioning",
-        cons: isRetail ? (otherInit !== 0 ? "Yes" : "No") : "",
-        arrow: changed ? ">" : "",
-        dealer: otherDealer !== 0 ? "Yes" : "No",
-        effect: otherDealer > 0 ? dedLabel(otherDealer) : otherDealer < 0 ? "+" + this.money(-otherDealer) : "",
-        effectColor: otherDealer > 0 ? "var(--color-red-700)" : "var(--color-green-700)",
-        rowBg: changed ? "var(--color-yellow-300)" : "transparent",
-        nameWeight: 500
-      });
-    }
-    const condInitTotal = initAssigned + otherInit;
-    const condDealerTotal = dealerAssigned + otherDealer;
-    const condTotals = [
-      { label: "Condition deductions", labelColor: "var(--text-primary)", weight: 500, was: init ? this.money(condInitTotal) : "", now: this.money(condDealerTotal) },
-      { label: "Certification, transport & pack", labelColor: "var(--text-midtone)", weight: 400, was: init ? this.money(prepSum) : "", now: this.money(prepSum) },
-      { label: init ? "Total deducted (initial → updated)" : "Total deducted from your offer", labelColor: "var(--text-primary)", weight: 600, was: init ? this.money(condInitTotal + prepSum) : "", now: this.money(condDealerTotal + prepSum) }
+
+    // --- damage diagram: red wins over yellow ---
+    const hit = {};
+    items.filter(it => it.cat === "condition" && it.amount !== 0).forEach(it => (it.panel || []).forEach(p => { if (hit[p] !== "major") hit[p] = it.sev === "major" ? "major" : "minor"; }));
+    const fillOf = p => hit[p] === "major" ? "var(--color-red-600)" : hit[p] === "minor" ? "var(--color-yellow-500)" : "var(--surface-primary-2)";
+    const E = React.createElement;
+    const damageSvg = E("svg", { viewBox: "0 0 220 408", width: "100%", role: "img", "aria-label": "Top-down vehicle diagram with damaged panels highlighted", style: { display: "block" } },
+      E("rect", { x: 40, y: 10, width: 140, height: 384, rx: 40, fill: "var(--surface-primary-1)", stroke: "var(--stroke-secondary-2)", strokeWidth: 2 }),
+      ...Object.keys(PANELS).map(p => E(PANELS[p][0], { key: p, ...PANELS[p][1], fill: fillOf(p), stroke: "var(--stroke-secondary-2)", strokeWidth: 1.5 })),
+      E("text", { x: 110, y: 6, textAnchor: "middle", fontSize: 9, fill: "var(--text-midtone)" }, "FRONT"),
+      E("text", { x: 110, y: 406, textAnchor: "middle", fontSize: 9, fill: "var(--text-midtone)" }, "REAR"));
+    const damageList = items.filter(it => it.cat === "condition" && it.amount !== 0).map(it => ({ label: it.label, dot: it.sev === "major" ? "var(--color-red-600)" : "var(--color-yellow-500)", sev: it.sev === "major" ? "Major" : "Minor" }));
+
+    // --- diagnostics ---
+    const chipOf = st => st === "fail" ? ["Fail", "var(--color-red-300)", "var(--color-red-700)"] : st === "warn" ? ["Warning", "var(--color-yellow-300)", "var(--color-yellow-900)"] : ["Pass", "var(--color-green-300)", "var(--color-green-700)"];
+    const diag = items.filter(it => it.cat === "codes").map(it => { const c = chipOf(it.status); return { label: it.label, codeLine: it.code === "No codes" ? "No codes" : "Code " + it.code, chip: c[0], chipBg: c[1], chipFg: c[2], meaning: it.note,
+      amount: it.amount === 0 ? "None" : this.signed(it.amount), color: it.amount < 0 ? "var(--color-red-700)" : it.amount > 0 ? "var(--color-green-700)" : "var(--text-midtone)" }; });
+
+    // --- dealer-only values, each off until switched on ---
+    const books = (d.books || []).map(b => ({ label: b.name + " book value", value: this.money(b.value) }));
+    const internals = [
+      ...(show.imv ? [{ label: "CarGurus IMV", value: this.money(d.bookValue) }] : []),
+      ...(show.books ? books : []),
+      ...(show.recon ? [{ label: "Reconditioning cost", value: this.money(d.repairs) }] : [])
     ];
-    const condIntro = init
-      ? "Every condition we check, as you reported it online and as our appraiser verified it in person. Highlighted rows changed."
-      : "Every condition we check, and what our appraiser recorded for your vehicle.";
-    const offerDeltaPct = init && init.offer ? ((((d.offer || 0) - init.offer) / init.offer) * 100) : 0;
-    const whyParts = [];
-    if (changedCount > 0) whyParts.push(changedCount + (changedCount === 1 ? " condition item changed" : " condition items changed") + " after the in-person check (highlighted below)");
-    if (init && (d.bookValue || 0) !== (init.bookValue || 0)) whyParts.push("market value " + ((d.bookValue || 0) > (init.bookValue || 0) ? "moved up" : "moved down") + " since your online offer");
-    if (init && (d.marginDeduct || 0) !== (init.marginDeduct || 0)) whyParts.push("the dealer's margin was updated");
-    const whyLine = !init ? "" : whyParts.length ? "What changed: " + whyParts.join("; ") + "." : "Your in-person appraisal confirmed the online offer — no change.";
+    // Panel controls: a segmented control for either/or choices and a switch for on/off options.
+    const segBtn = on => "flex:1 1 0;height:34px;border:none;font-size:13px;font-weight:500;cursor:pointer;" + (on ? "background:var(--surface-action-primary-default);color:#fff" : "background:var(--surface-primary-1);color:var(--text-primary)");
+    const sw = (label, hint, on, toggle) => ({ label, hint, on, toggle,
+      trackStyle: "flex:none;position:relative;width:40px;height:24px;padding:0;border:none;border-radius:60px;cursor:pointer;background:" + (on ? "var(--surface-action-primary-default)" : "var(--color-livid-400)"),
+      knobStyle: "position:absolute;top:2px;left:" + (on ? "18px" : "2px") + ";width:20px;height:20px;border-radius:60px;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.3);transition:left .15s" });
+    const showSw = (key, label, hint) => sw(label, hint, !!show[key], () => this.saveSet(c => ({ ...c, show: { ...c.show, [key]: !c.show[key] } })));
 
-    let bridge = [];
-    if (init) {
-      const signedM = n => (n > 0 ? "+" : n < 0 ? "−" : "") + this.money(Math.abs(n));
-      const colorOf = n => n > 0 ? "var(--color-green-700)" : "var(--color-red-700)";
-      const totalDiff = (d.offer || 0) - (init.offer || 0);
-      const reconU = (d.repairs || 0) - prepSum;
-      const reconI = (init.costs || 0) - (init.prep != null ? init.prep : prepSum);
-      const condEff = -(reconU - reconI);
-      const mktEff = Math.round(((d.bookValue || 0) - (init.bookValue || 0)) * (1 - (init.marginPct || 0) / 100));
-      const adjEff = totalDiff - condEff - mktEff;
-      const detailBits = [];
-      const lab = { odo: "Mileage", year: "Year", make: "Make", model: "Model", trim: "Trim", body: "Body", engine: "Engine", trans: "Transmission", color: "Color" };
-      Object.keys(init.details || {}).forEach(k => {
-        if (init.details[k] && d[k] && String(init.details[k]) !== String(d[k])) detailBits.push(lab[k] + " " + init.details[k] + (k === "odo" ? " mi" : "") + " → " + d[k] + (k === "odo" ? " mi" : ""));
-      });
-      if (condEff !== 0) bridge.push({ label: "Vehicle condition", sub: changedCount + (changedCount === 1 ? " item" : " items") + " changed in the in-person check — highlighted in the repair summary below.", amount: condEff });
-      if (mktEff !== 0) {
-        const srcChanged = init.bookName && d.bookName && init.bookName !== d.bookName;
-        bridge.push(srcChanged
-          ? { label: "Valuation source", sub: "Your vehicle is now valued with " + d.bookName + " (was " + init.bookName + ").", amount: mktEff }
-          : detailBits.length
-            ? { label: "Vehicle details corrected", sub: detailBits.join(" · ") + ".", amount: mktEff }
-            : { label: "Market value", sub: "Market value for your vehicle " + (mktEff > 0 ? "moved up" : "moved down") + " since your online offer.", amount: mktEff });
-      }
-      if (adjEff !== 0) bridge.push({ label: "Dealer adjustment", sub: d.overrideReason ? d.overrideReason : "Pricing was updated by the dealer after the in-person appraisal.", amount: adjEff });
-      bridge = bridge.map(b => ({ ...b, color: colorOf(b.amount), amount: signedM(b.amount) }));
-    }
+    // --- deal worksheet ---
+    const payoff = parseNum(s.ws.payoff), financed = parseNum(s.ws.financed), apr = parseNum(s.ws.apr), term = Math.max(1, Math.round(parseNum(s.ws.term)));
+    const equity = offer - payoff, mr = apr / 1200;
+    const payment = financed <= 0 ? 0 : mr > 0 ? financed * mr / (1 - Math.pow(1 + mr, -term)) : financed / term;
+    const setWs = k => e => { const v = e.target.value; this.setState(st => ({ ws: { ...st.ws, [k]: v } })); };
 
-    const insp = d.inspection;
-    const hasInsp = !!(insp && insp.items && insp.items.length);
-    let inspRows = [], inspOrigLabel = "", inspOrigTotal = "", inspDealerTotal = "", inspNetLabel = "", inspNote = "", inspNewCount = 0, inspPrepTotal = "", inspGrandTotal = "";
-    if (hasInsp) {
-      inspOrigLabel = insp.origLabel || "Your photo";
-      inspNewCount = insp.items.filter(i => i.status === "new").length;
-      const net = (insp.dealerTotal || 0) - (insp.origTotal || 0);
-      inspPrepTotal = this.money(insp.prepTotal || 0);
-      inspGrandTotal = this.money((insp.dealerTotal || 0) + (insp.prepTotal || 0));
-      inspOrigTotal = this.money(insp.origTotal);
-      inspDealerTotal = this.money(insp.dealerTotal);
-      inspNetLabel = (net > 0 ? "+" : net < 0 ? "−" : "") + this.money(Math.abs(net));
-      inspNote = inspNewCount > 0
-        ? "Our appraiser inspected the vehicle in person and took fresh photos. " + inspNewCount + (inspNewCount === 1 ? " item wasn't" : " items weren't") + " visible in the first photo set — every change is shown below."
-        : "Our appraiser inspected the vehicle in person and took fresh photos. Here is every repair item, side by side with the first estimate.";
-      inspRows = insp.items.map(i => {
-        const delta = (i.now || 0) - (i.was || 0);
-        const isNew = i.status === "new";
-        return {
-          name: i.name,
-          note: i.note,
-          chip: isNew ? "New find" : i.status === "revised" ? "Cost revised" : "Confirmed",
-          chipBg: isNew ? "var(--color-red-300)" : i.status === "revised" ? "var(--color-yellow-300)" : "var(--color-green-300)",
-          chipFg: isNew ? "var(--color-red-700)" : i.status === "revised" ? "var(--text-primary)" : "var(--color-green-700)",
-          wasLabel: isNew ? "Not reported" : this.money(i.was),
-          nowLabel: this.money(i.now),
-          deltaLabel: delta === 0 ? "No change" : (delta > 0 ? "+" : "−") + this.money(Math.abs(delta)),
-          deltaColor: delta === 0 ? "var(--text-midtone)" : "var(--color-red-700)",
-          origPhoto: i.origPhoto,
-          hasOrigPhoto: !!i.origPhoto,
-          noOrigPhoto: !i.origPhoto,
-          dealerPhoto: i.dealerPhoto
-        };
-      });
-    }
-
-    const expires = new Date(Date.now() + 7 * 864e5).toLocaleDateString("en-US", { month: "2-digit", day: "2-digit", year: "numeric" });
+    const init = d.initial, delta = init ? offer - (init.offer || 0) : 0;
+    const dollars = n => "$" + Math.round(n).toLocaleString("en-US") + ".00";
+    const wordsOf = n => { const w = words(Math.max(0, Math.round(n))); return w.charAt(0).toUpperCase() + w.slice(1) + " and 00/100 dollars"; };
 
     return {
       dealerName: d.dealerName || "Prime Motors",
-      appraiser: d.appraiser || "D. Mercer",
-      preparedOn: new Date().toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" }),
-      greeting: name ? name + ", your offer is ready!" : "Your offer is ready!",
-      expiryLine: "Expires on " + expires + " or in 250 mi",
-      vin: d.vin,
-      vehicleTitle: [d.year, d.make, d.model, d.trim].filter(Boolean).join(" "),
-      specLine: [d.odo ? d.odo + " miles" : null, d.engine, d.trans, d.body].filter(Boolean).join(" · "),
-      bookName: d.bookName,
-      bookBasis: d.bookBasis || "Trade-in",
-      bookValue: this.money(d.bookValue),
-      valuation: this.money(d.bookValue),
-      repairsLine: "− " + this.money(d.repairs),
-      repairsTotal: this.money(d.repairs),
-      offer: this.money(d.offer),
-      hasInsp, inspRows, inspOrigLabel, inspOrigTotal, inspDealerTotal, inspNetLabel, inspNote,
-      inspPrepTotal, inspGrandTotal,
-      isRetail, notRetail: !isRetail,
-      bridge, hasBridge: bridge.length > 0,
-      hasReason: !!(d.overrideReason && String(d.overrideReason).trim()), reasonText: d.overrideReason || "",
-      dealerAdjLine: "− " + this.money(Math.max(0, (d.bookValue || 0) - (d.repairs || 0) - (d.offer || 0))),
-      condGroups, condTotals, condIntro, whyLine,
-      offerDeltaPct: (offerDeltaPct > 0 ? "+" : offerDeltaPct < 0 ? "−" : "") + Math.abs(offerDeltaPct).toFixed(1) + "%",
-      deltaBg: offerDeltaColor === "var(--color-red-700)" ? "var(--color-red-300)" : offerDeltaColor === "var(--color-green-700)" ? "var(--color-green-300)" : "var(--surface-primary-2)",
-      updatedOn: new Date().toLocaleDateString("en-US", { month: "2-digit", day: "2-digit", year: "numeric" }),
-      initialOfferLabel, initialSentNote, initialRows, finalRows, deltaRows,
-      offerDelta, offerDeltaColor, offerDeltaNote,
-      finalOfferLabel: this.money(d.offer),
-      checks,
-      repairGroups: groups,
-      insights,
-      supply: "Balanced",
-      demand: "Steady",
-      comments: "This offer is good towards the purchase of a vehicle or as cash for your trade — NO CASH VALUE, NON TRANSFERABLE, VOID WHERE PROHIBITED. Offer subject to verification of vehicle condition, mileage, and clear title at the dealership.",
-      doPrint: () => window.print(),
+      preparedOn: fmt(today, { month: "long", day: "numeric", year: "numeric" }), preparedShort: fmt(today, { month: "2-digit", day: "2-digit", year: "numeric" }),
+      validThrough: fmt(valid, { month: "long", day: "numeric", year: "numeric" }),
+      hasName: !!name, customerName: name, payee: name || "Customer", offerNo: "O-" + String(d.vin || "").slice(-6).toUpperCase(),
+      vin: d.vin, vehicleTitle, vehicleShort,
+      mileageLine: d.odo ? d.odo + " miles" : "", specLine: [d.color, d.engine, d.trans, d.body].filter(Boolean).join(" · "),
+      offerLabel: this.money(offer), offerPlain: String(computed.toLocaleString("en-US")), offerCheck: dollars(offer), offerWords: wordsOf(offer),
+      memoLine: vehicleTitle + " · VIN " + d.vin,
+      hasOnline: !!init, onlineOffer: init ? this.money(init.offer) : "", onlineDelta: delta === 0 ? "no change" : this.signed(delta) + " since then",
+
+      isItemized: itemized, isStandard: set.layout !== "check", isCheck: set.layout === "check",
+      panelOpen: s.panel, togglePanel: () => this.setState(st => ({ panel: !st.panel })), closePanel: () => this.setState({ panel: false }),
+      pageClass: s.panel ? "cg-page cg-open" : "cg-page",
+      customizeBtnStyle: "height:34px;padding:0 18px;border-radius:60px;border:none;background:" + (s.panel ? "var(--surface-action-primary-hover)" : "var(--surface-action-primary-default)") + ";color:#fff;font-size:13px;font-weight:500;cursor:pointer;white-space:nowrap",
+      modeOpts: [["simple", "Simple"], ["itemized", "Detailed"]].map(([k, l]) => ({ label: l, on: set.mode === k, pick: () => this.saveSet(c => ({ ...c, mode: k })), style: segBtn(set.mode === k) })),
+      layoutOpts: [["standard", "Standard"], ["check", "Check-style"]].map(([k, l]) => ({ label: l, on: set.layout === k, pick: () => this.saveSet(c => ({ ...c, layout: k })), style: segBtn(set.layout === k) })),
+      showRows: [showSw("imv", "CarGurus IMV", "Market value for this vehicle"), showSw("books", "Third-party book values", "MMR, J.D. Power and Black Book"), showSw("recon", "Recon cost", "Your estimated reconditioning cost")],
+      addonRows: [sw("Deal worksheet", "Payoff, equity and an estimated payment", !!set.worksheet, () => this.saveSet(c => ({ ...c, worksheet: !c.worksheet })))],
+      thisOfferRows: itemized ? [sw("Edit amounts", "Change any dollar amount before you print", edit, () => this.setState(st => ({ edit: !st.edit })))] : [],
+      worksheetOn: !!set.worksheet, editOn: edit, notEditing: !edit,
+      overrideVal: s.overrideDraft != null ? s.overrideDraft : (s.override != null ? String(s.override.toLocaleString("en-US")) : ""),
+      onOverride: e => this.setState({ overrideDraft: e.target.value }),
+      onOverrideBlur: commitOverride, onOverrideKey: keyFor(commitOverride),
+      hasOverride: s.override != null, clearOverride: () => this.setState({ override: null, overrideDraft: null }),
+
+      baseLabel: this.money(base), baseDraft: s.baseDraft != null ? s.baseDraft : String(base),
+      onBase: e => this.setState({ baseDraft: e.target.value }),
+      onBaseBlur: commitBase, onBaseKey: keyFor(commitBase),
+      groups, addsLabel: adds ? "+" + this.money(adds) : "$0", dedsLabel: deds ? "−" + this.money(deds) : "$0",
+      hasInternals: internals.length > 0, internals,
+      damageSvg, damageList, noDamage: damageList.length === 0, diag,
+
+      wsPayoff: s.ws.payoff, wsFinanced: s.ws.financed, wsApr: s.ws.apr, wsTerm: s.ws.term,
+      onPayoff: setWs("payoff"), onFinanced: setWs("financed"), onApr: setWs("apr"), onTerm: setWs("term"),
+      equityLabel: equity >= 0 ? "Equity in your trade" : "Negative equity (you owe more than the offer)", equityValue: (equity < 0 ? "−" : "") + this.money(Math.abs(equity)), equityColor: equity < 0 ? "var(--color-red-700)" : "var(--color-green-700)",
+      paymentLabel: this.money(payment) + "/mo (est.)",
+
+      doPrint: () => { this.setState({ edit: false }, () => window.print()); },
       backToDealer: () => {
         if (this.props.onClose) return this.props.onClose();
         if (window.opener && !window.opener.closed) { window.opener.focus(); window.close(); }
-        else window.location.href = "Appraisal Workspace v2.dc.html";
+        else window.location.href = "Appraisal Workspace v6.dc.html";
       }
     };
   }
